@@ -90,14 +90,6 @@
             <version>3.2.17.RELEASE</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- Bring in Alfresco RAD so we get access to AlfrescoTestRunner classes -->
-        <dependency>
-            <groupId>org.alfresco.maven</groupId>
-            <artifactId>alfresco-rad</artifactId>
-            <version>${alfresco.sdk.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
