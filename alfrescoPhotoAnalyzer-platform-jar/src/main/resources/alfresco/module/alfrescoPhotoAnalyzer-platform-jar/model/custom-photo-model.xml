@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model name="ec2m:easyContent2Metadata" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+<model name="pa:alfrescoPhotoAnalyzer" xmlns="http://www.alfresco.org/model/dictionary/1.0">
 
     <!-- Optional meta-data about the model -->
-    <description>EasyContent2Metadata Document Model</description>
+    <description>Alfresco Photo Analyzer Model</description>
     <author>mimacom</author>
     <version>1.0</version>
 
@@ -16,76 +16,99 @@
         <import uri="http://www.alfresco.org/model/datalist/1.0" prefix="dl" />
     </imports>
 
-    <!-- Custom namespace for the EM company -->
     <namespaces>
-        <namespace uri="http://www.mimacom.com/alfresco/easyContent2Metadata/1.0" prefix="ec2m"/>
+        <namespace uri="http://www.mimacom.com/alfresco/alfrescoPhotoAnalyzer/1.0" prefix="pa"/>
     </namespaces>
 
     <!-- ===============================================================================================================
         Constraints, Types, and Aspects go here...
         -->
 
+    <constraints>
+        <constraint name="pa:emotionConstraints" type="LIST">
+            <parameter name="allowedValues">
+                <list>
+                    <value>ANGER</value>
+                    <value>CONTEMPT</value>
+                    <value>DISGUST</value>
+                    <value>FEAR</value>
+                    <value>HAPPINESS</value>
+                    <value>NEUTRAL</value>
+                    <value>SADNESS</value>
+                    <value>SURPRISE</value>
+                </list>
+            </parameter>
+        </constraint>
+        <constraint name="pa:genderConstraints" type="LIST">
+            <parameter name="allowedValues">
+                <list>
+                    <value>MALE</value>
+                    <value>FEMALE</value>
+                </list>
+            </parameter>
+        </constraint>
+    </constraints>
+
     <types>
-        <type name="ec2m:easyContent2MetadataDocument">
-            <title>EasyContent2Metadata Document Type Example</title>
+        <type name="pa:facePhoto">
+            <title>Face Photo Document</title>
             <parent>cm:content</parent>
             <properties>
-                <property name="ec2m:author">
-                    <title>Document Author</title>
-                    <type>d:text</type>
+                <property name="pa:numFaces">
+                    <title>Number of Faces</title>
+                    <type>d:int</type>
                 </property>
-                <property name="ec2m:city">
-                    <title>City</title>
-                    <type>d:text</type>
-                </property>
-                <property name="ec2m:date">
-                    <title>Date</title>
-                    <type>d:date</type>
+                <property name="pa:faceList">
+                    <title>Face List</title>
+                    <type>pa:faceMetadata</type>
+                    <multiple>true</multiple>
                 </property>
             </properties>
         </type>
 
-        <type name="ec2m:extractorMappingDatalist">
-            <title>Extractor Mapping Datalist</title>
-            <parent>dl:dataListItem</parent>
+        <type name="pa:faceMetadata">
+            <title>Face Metadata</title>
+            <parent>cm:content</parent>
+            <properties>
+                <property name="pa:coordinates">
+                    <title>Face Coordinates</title>
+                    <type>d:text</type>
+                </property>
+                <property name="pa:emotion">
+                    <type>d:text</type>
+                    <constraints>
+                        <constraint ref="pa:emotionConstraints" />
+                    </constraints>
+                </property>
+                <property name="pa:gender">
+                    <type>d:text</type>
+                    <constraints>
+                        <constraint ref="pa:genderConstraints" />
+                    </constraints>
+                </property>
+                <property name="pa:age">
+                    <title>Face Age</title>
+                    <type>d:float</type>
+                </property>
+            </properties>
             <mandatory-aspects>
-                <aspect>ec2m:a_datalist</aspect>
-                <aspect>ec2m:a_datalist_active</aspect>
+                <aspect>pa:accesoriesAspect</aspect>
             </mandatory-aspects>
         </type>
     </types>
 
     <aspects>
-        <aspect name="ec2m:a_datalist">
+        <aspect name="pa:accesoriesAspect">
             <properties>
-                <property name="ec2m:type">
-                    <type>d:text</type>
-                    <mandatory>true</mandatory>
-                    <multiple>false</multiple>
-                </property>
-                <property name="ec2m:property">
-                    <type>d:text</type>
-                    <mandatory>true</mandatory>
-                    <multiple>false</multiple>
-                </property>
-                <property name="ec2m:configuration">
-                    <type>d:text</type>
-                    <mandatory>true</mandatory>
-                    <multiple>false</multiple>
-                </property>
-                <property name="ec2m:value">
-                    <type>d:text</type>
-                    <mandatory>true</mandatory>
-                    <multiple>false</multiple>
-                </property>
-            </properties>
-        </aspect>
-
-        <aspect name="ec2m:a_datalist_active">
-            <properties>
-                <property name="ec2m:item_active">
+                <property name="pa:glasses">
                     <type>d:boolean</type>
-                    <default>true</default>
+                    <mandatory>false</mandatory>
+                    <multiple>false</multiple>
+                </property>
+                <property name="pa:headWear">
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                    <multiple>false</multiple>
                 </property>
             </properties>
         </aspect>
