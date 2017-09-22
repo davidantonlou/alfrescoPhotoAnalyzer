@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="alfrescoPhotoAnalyzer-platform-jar.custom_behaviour.change-type" class="org.alfresco.extension.behaviours.PhotoBehaviour" init-method="init">
+        <property name="policyComponent">
+            <ref bean="policyComponent" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService" />
+        </property>
+        <property name="namespacePrefixResolver">
+            <ref bean="namespaceService" />
+        </property>
+    </bean>
+
+</beans>
