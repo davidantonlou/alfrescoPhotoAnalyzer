@@ -1,6 +1,7 @@
 package org.alfresco.extension.behaviours;
 
 import org.alfresco.extension.model.FaceMetadata;
+import org.alfresco.extension.utils.Constants;
 import org.alfresco.extension.utils.FaceRecognitionUtils;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.node.NodeServicePolicies;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,15 +35,9 @@ public class PhotoBehaviour implements NodeServicePolicies.OnCreateNodePolicy {
 
     private Behaviour onCreateNode;
 
-    private static final String IMAGE_STRING = "image";
-    private static final String FACE_PHOTO_TYPE = "pa:facePhoto";
-
-    private static final QName PROP_EMOTION = QName.createQName("http://www.mimacom.com/alfresco/alfrescoPhotoAnalyzer/1.0", "emotion");
-
     public void init() {
         this.onCreateNode = new JavaBehaviour(this, "onCreateNode",
                 Behaviour.NotificationFrequency.TRANSACTION_COMMIT);
-
 
         this.policyComponent.bindClassBehaviour(QName.createQName(NamespaceService.ALFRESCO_URI, "onCreateNode"), ContentModel.TYPE_CONTENT, this.onCreateNode);
     }
@@ -49,21 +45,30 @@ public class PhotoBehaviour implements NodeServicePolicies.OnCreateNodePolicy {
     @Override
     public void onCreateNode(ChildAssociationRef childAssociationRef) {
         NodeRef nodeRef = childAssociationRef.getChildRef();
-        logger.info("+++++++++++++ onCreateNode ++++++++++++");
-        if(this.nodeService.exists(nodeRef)) {
-            logger.info("+++++++++++++ inside if ");
+        if (this.nodeService.exists(nodeRef)) {
             String mimeType = ((ContentData)this.nodeService.getProperty(nodeRef, ContentModel.PROP_CONTENT)).getMimetype();
-            logger.info("+++++++++++++ mimeType: " + mimeType);
-            if (mimeType!=null && mimeType.startsWith(IMAGE_STRING)){
-                logger.info("+++++++++++++ changing type ...");
-                this.nodeService.setType(nodeRef, QName.resolveToQName(this.namespacePrefixResolver, FACE_PHOTO_TYPE));
+            if (mimeType != null && mimeType.startsWith(Constants.IMAGE_STRING)){
+                this.nodeService.setType(nodeRef, QName.resolveToQName(this.namespacePrefixResolver, Constants.FACE_PHOTO_TYPE));
                 try {
                     File file = getContentAsFile(nodeRef);
                     List<FaceMetadata> faceMetadata =  FaceRecognitionUtils.prepareResponse(file);
 
-                    //A saco
-                    this.nodeService.setProperty(nodeRef, PROP_EMOTION, faceMetadata.get(0).getEmotion());
-                }catch (Exception e){
+                    ArrayList genderList = new ArrayList();
+                    ArrayList ageList = new ArrayList();
+                    ArrayList emotionList = new ArrayList();
+                    ArrayList accesoriesList = new ArrayList();
+                    for (int i=0; i<faceMetadata.size(); i++){
+                        genderList.add(faceMetadata.get(i).getGender());
+                        ageList.add(faceMetadata.get(i).getAge());
+                        emotionList.add(faceMetadata.get(i).getEmotion());
+                        accesoriesList.addAll(faceMetadata.get(i).getAccessories());
+                    }
+
+                    this.nodeService.setProperty(nodeRef, Constants.PROP_AGE, ageList);
+                    this.nodeService.setProperty(nodeRef, Constants.PROP_GENDER, genderList);
+                    this.nodeService.setProperty(nodeRef, Constants.PROP_EMOTION, emotionList);
+                    this.nodeService.setProperty(nodeRef, Constants.PROP_ACCESSORIES, accesoriesList);
+                } catch (Exception e){
                     logger.error(e.getMessage());
                 }
             }
@@ -72,8 +77,8 @@ public class PhotoBehaviour implements NodeServicePolicies.OnCreateNodePolicy {
 
     private File getContentAsFile(NodeRef nodeRef)throws IOException{
         String name = (String)this.nodeService.getProperty(nodeRef,ContentModel.PROP_NAME);
-        File tempFile = TempFileProvider.createTempFile("temp_"+nodeRef.getId(), name.substring(name.lastIndexOf(".")+1));
-        InputStream is = this.contentService.getReader(nodeRef, ContentModel.PROP_CONTENT).getContentInputStream())
+        File tempFile = TempFileProvider.createTempFile(nodeRef.getId(), name.substring(name.lastIndexOf(".")));
+        InputStream is = this.contentService.getReader(nodeRef, ContentModel.PROP_CONTENT).getContentInputStream();
         FileUtils.copyInputStreamToFile(is, tempFile);
         return tempFile;
     }

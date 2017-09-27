@@ -58,46 +58,39 @@
                     <title>Number of Faces</title>
                     <type>d:int</type>
                 </property>
-            </properties>
-            <associations>
-                <association name="pa:faceList">
-                    <title>Face List</title>
-                    <source>
-                        <mandatory>false</mandatory>
-                        <many>true</many>
-                    </source>
-                    <target>
-                        <class>pa:faceMetadata</class>
-                        <mandatory>false</mandatory>
-                        <many>true</many>
-                    </target>
-                </association>
-            </associations>
-        </type>
-
-        <type name="pa:faceMetadata">
-            <title>Face Metadata</title>
-            <parent>cm:content</parent>
-            <properties>
-                <property name="pa:coordinates">
-                    <title>Face Coordinates</title>
-                    <type>d:text</type>
-                </property>
-                <property name="pa:emotion">
-                    <type>d:text</type>
-                    <constraints>
-                        <constraint ref="pa:emotionConstraints" />
-                    </constraints>
-                </property>
                 <property name="pa:gender">
+                    <title>Gender</title>
                     <type>d:text</type>
+                    <multiple>true</multiple>
                     <constraints>
                         <constraint ref="pa:genderConstraints" />
                     </constraints>
                 </property>
                 <property name="pa:age">
-                    <title>Face Age</title>
+                    <title>Age</title>
                     <type>d:int</type>
+                    <multiple>true</multiple>
+                </property>
+                <property name="pa:coordinates">
+                    <title>Face Coordinates</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                </property>
+                <property name="pa:emotion">
+                    <title>Face Emotions</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                    <constraints>
+                        <constraint ref="pa:emotionConstraints" />
+                    </constraints>
+                </property>
+                <property name="pa:accessories">
+                    <title>Face Accessories</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                    <constraints>
+                        <constraint ref="pa:emotionConstraints" />
+                    </constraints>
                 </property>
             </properties>
             <mandatory-aspects>

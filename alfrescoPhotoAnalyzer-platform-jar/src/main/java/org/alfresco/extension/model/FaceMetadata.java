@@ -43,7 +43,6 @@ public class FaceMetadata {
                     faceMetadataList.add(faceMetadata);
                 }
             }
-            //faceMetadata.setFaceCoordinates();
         } catch (JSONException e) {
             e.printStackTrace();
         }

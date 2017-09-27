@@ -32,17 +32,13 @@ public class FaceRecognitionUtils {
             builder.setParameter("returnFaceId", "true");
             builder.setParameter("returnFaceRectangle", "true");
             builder.setParameter("returnFaceAttributes", "age,gender,emotion,hair,accessories");
-//            builder.setParameter("returnFaceAttributes", "age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise");
 
             URI uri = builder.build();
             HttpPost request = new HttpPost(uri);
-            request.setHeader("Content-Type", "application/json");
+            request.setHeader("Content-Type", "application/octet-stream");
             request.setHeader("Ocp-Apim-Subscription-Key", "4ef1782a6a0f473a86b3f139dc7457f3");
 
             FileEntity reqEntity = new FileEntity(photo, ContentType.APPLICATION_OCTET_STREAM);
-
-            // Request body
-//            StringEntity reqEntity = new StringEntity("{\"url\":\"" + url + "\"}");
             request.setEntity(reqEntity);
 
             HttpResponse response = httpclient.execute(request);
@@ -50,7 +46,7 @@ public class FaceRecognitionUtils {
 
             if (entity != null) {
                 faceMetadataList = FaceMetadata.getInstance(EntityUtils.toString(entity));
-                faceMetadataList.forEach(faceMetadata -> System.out.println(faceMetadata.toString()));
+                faceMetadataList.forEach(faceMetadata -> System.out.println("metadata: " + faceMetadata.toString()));
             }
         }
         catch (Exception e) {
