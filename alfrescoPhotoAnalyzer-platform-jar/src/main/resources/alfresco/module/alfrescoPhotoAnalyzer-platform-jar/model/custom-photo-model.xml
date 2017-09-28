@@ -47,6 +47,24 @@
                 </list>
             </parameter>
         </constraint>
+        <constraint name="pa:accesoriesConstraints" type="LIST">
+            <parameter name="allowedValues">
+                <list>
+                    <value>READINGGLASSES</value>
+                    <value>SUNGLASSES</value>
+                    <value>HEADWEAR</value>
+                </list>
+            </parameter>
+        </constraint>
+        <constraint name="pa:hairConstraints" type="LIST">
+            <parameter name="allowedValues">
+                <list>
+                    <value>BEARD</value>
+                    <value>MOUSTACHE</value>
+                    <value>BALD</value>
+                </list>
+            </parameter>
+        </constraint>
     </constraints>
 
     <types>
@@ -89,30 +107,10 @@
                     <type>d:text</type>
                     <multiple>true</multiple>
                     <constraints>
-                        <constraint ref="pa:emotionConstraints" />
+                        <constraint ref="pa:accesoriesConstraints" />
                     </constraints>
                 </property>
             </properties>
-            <mandatory-aspects>
-                <aspect>pa:accesoriesAspect</aspect>
-            </mandatory-aspects>
         </type>
     </types>
-
-    <aspects>
-        <aspect name="pa:accesoriesAspect">
-            <properties>
-                <property name="pa:glasses">
-                    <type>d:boolean</type>
-                    <mandatory>false</mandatory>
-                    <multiple>false</multiple>
-                </property>
-                <property name="pa:headWear">
-                    <type>d:boolean</type>
-                    <mandatory>false</mandatory>
-                    <multiple>false</multiple>
-                </property>
-            </properties>
-        </aspect>
-    </aspects>
 </model>

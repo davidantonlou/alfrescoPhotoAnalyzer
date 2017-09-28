@@ -20,8 +20,10 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class PhotoBehaviour implements NodeServicePolicies.OnCreateNodePolicy {
@@ -51,12 +53,12 @@ public class PhotoBehaviour implements NodeServicePolicies.OnCreateNodePolicy {
                 this.nodeService.setType(nodeRef, QName.resolveToQName(this.namespacePrefixResolver, Constants.FACE_PHOTO_TYPE));
                 try {
                     File file = getContentAsFile(nodeRef);
-                    List<FaceMetadata> faceMetadata =  FaceRecognitionUtils.prepareResponse(file);
+                    List<FaceMetadata> faceMetadata =  new FaceRecognitionUtils().prepareResponse(file);
 
-                    ArrayList genderList = new ArrayList();
-                    ArrayList ageList = new ArrayList();
-                    ArrayList emotionList = new ArrayList();
-                    ArrayList accesoriesList = new ArrayList();
+                    List<String> genderList = new ArrayList();
+                    List<Float> ageList = new ArrayList();
+                    List<String> emotionList = new ArrayList();
+                    List<String> accesoriesList = new ArrayList();
                     for (int i=0; i<faceMetadata.size(); i++){
                         genderList.add(faceMetadata.get(i).getGender());
                         ageList.add(faceMetadata.get(i).getAge());
@@ -64,10 +66,15 @@ public class PhotoBehaviour implements NodeServicePolicies.OnCreateNodePolicy {
                         accesoriesList.addAll(faceMetadata.get(i).getAccessories());
                     }
 
-                    this.nodeService.setProperty(nodeRef, Constants.PROP_AGE, ageList);
-                    this.nodeService.setProperty(nodeRef, Constants.PROP_GENDER, genderList);
-                    this.nodeService.setProperty(nodeRef, Constants.PROP_EMOTION, emotionList);
-                    this.nodeService.setProperty(nodeRef, Constants.PROP_ACCESSORIES, accesoriesList);
+                    genderList = genderList.stream().distinct().collect(Collectors.toList());
+                    emotionList = emotionList.stream().distinct().collect(Collectors.toList());
+                    accesoriesList = accesoriesList.stream().distinct().collect(Collectors.toList());
+
+                    this.nodeService.setProperty(nodeRef, Constants.PROP_NUM_FACES, faceMetadata.size());
+                    if (ageList.size() > 0) this.nodeService.setProperty(nodeRef, Constants.PROP_AGE, (Serializable) ageList);
+                    if (genderList.size() > 0) this.nodeService.setProperty(nodeRef, Constants.PROP_GENDER, (Serializable) genderList);
+                    if (emotionList.size() > 0) this.nodeService.setProperty(nodeRef, Constants.PROP_EMOTION, (Serializable) emotionList);
+                    if (accesoriesList.size() > 0) this.nodeService.setProperty(nodeRef, Constants.PROP_ACCESSORIES, (Serializable) accesoriesList);
                 } catch (Exception e){
                     logger.error(e.getMessage());
                 }

@@ -10,47 +10,55 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FaceRecognitionUtils {
 
-    public HttpPost prepareRequest(){
-        return null;
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
+    public HttpPost prepareRequest(File file) throws URISyntaxException {
+        URIBuilder builder = new URIBuilder(Constants.AZURE_FACE_API_URL);
+        builder.setParameter("returnFaceId", "true");
+        builder.setParameter("returnFaceRectangle", "true");
+
+        builder.setParameter("returnFaceAttributes", Constants.FACE_ATTRIBUTES_LIST_TO_EXTRACT);
+
+        URI uri = builder.build();
+        HttpPost request = new HttpPost(uri);
+        request.setHeader("Content-Type", Constants.APPLICATION_OCTET_STREAM);
+        request.setHeader("Ocp-Apim-Subscription-Key", Constants.API_SUBSCRIPTION_KEY);
+
+        FileEntity reqEntity = new FileEntity(file, ContentType.APPLICATION_OCTET_STREAM);
+        request.setEntity(reqEntity);
+
+        return request;
     }
 
-    public static List<FaceMetadata> prepareResponse(File photo){
+    public List<FaceMetadata> prepareResponse(File photo){
         List<FaceMetadata> faceMetadataList = new ArrayList<>();
         HttpClient httpclient = HttpClients.createDefault();
 
         try {
-            URIBuilder builder = new URIBuilder("https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect");
+            HttpPost postRequest = prepareRequest(photo);
 
-            builder.setParameter("returnFaceId", "true");
-            builder.setParameter("returnFaceRectangle", "true");
-            builder.setParameter("returnFaceAttributes", "age,gender,emotion,hair,accessories");
-
-            URI uri = builder.build();
-            HttpPost request = new HttpPost(uri);
-            request.setHeader("Content-Type", "application/octet-stream");
-            request.setHeader("Ocp-Apim-Subscription-Key", "4ef1782a6a0f473a86b3f139dc7457f3");
-
-            FileEntity reqEntity = new FileEntity(photo, ContentType.APPLICATION_OCTET_STREAM);
-            request.setEntity(reqEntity);
-
-            HttpResponse response = httpclient.execute(request);
+            HttpResponse response = httpclient.execute(postRequest);
             HttpEntity entity = response.getEntity();
-
             if (entity != null) {
                 faceMetadataList = FaceMetadata.getInstance(EntityUtils.toString(entity));
-                faceMetadataList.forEach(faceMetadata -> System.out.println("metadata: " + faceMetadata.toString()));
+                if (logger.isDebugEnabled()) {
+                    faceMetadataList.forEach(faceMetadata -> logger.debug(faceMetadata.toString()));
+                }
             }
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
         }
 
         return faceMetadataList;

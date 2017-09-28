@@ -1,5 +1,6 @@
 package org.alfresco.extension.model;
 
+import org.alfresco.extension.utils.Constants;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,9 +8,6 @@ import org.json.JSONObject;
 import java.util.*;
 
 public class FaceMetadata {
-    private static String SEPARATOR = " | ";
-    private static String COMMA = ",";
-
     private String gender;
     private String emotion;
     private int age;
@@ -31,10 +29,10 @@ public class FaceMetadata {
                 for (int i = 0; i < jsonFaceArray.length(); i++) {
                     faceMetadata = new FaceMetadata();
 
-                    jsonFaceRectangle = jsonFaceArray.getJSONObject(i).getJSONObject("faceRectangle");
-                    jsonFaceAttributes = jsonFaceArray.getJSONObject(i).getJSONObject("faceAttributes");
+                    jsonFaceRectangle = jsonFaceArray.getJSONObject(i).getJSONObject(Constants.FACE_RECTANGLE);
+                    jsonFaceAttributes = jsonFaceArray.getJSONObject(i).getJSONObject(Constants.FACE_ATTRIBUTES);
 
-                    faceMetadata.setGender(jsonFaceAttributes.getString("gender").toUpperCase());
+                    faceMetadata.setGender(jsonFaceAttributes.getString(Constants.GENDER).toUpperCase());
                     faceMetadata.setFaceCoordinates(getCoordinatesFromJson(jsonFaceRectangle));
                     faceMetadata.setAccessories(getAccesoriesFromJson(jsonFaceAttributes));
                     faceMetadata.setAge(jsonFaceAttributes.getInt("age"));
@@ -53,7 +51,7 @@ public class FaceMetadata {
     private static String getEmotionFromJson(JSONObject jsonFaceAttributes) throws JSONException {
         Double maxValue = new Double(0);
         String maxEmotionKey = "";
-        JSONObject emotionsList = jsonFaceAttributes.getJSONObject("emotion");
+        JSONObject emotionsList = jsonFaceAttributes.getJSONObject(Constants.EMOTION);
 
         Iterator keyIterator = emotionsList.keys();
         Double currentEmotionValue;
@@ -70,32 +68,37 @@ public class FaceMetadata {
     }
 
     private static Set<String> getAccesoriesFromJson(JSONObject jsonFaceAttributes) throws JSONException {
-        JSONArray jsonAccessories = jsonFaceAttributes.getJSONArray("accessories");
+        JSONArray jsonAccessories = jsonFaceAttributes.getJSONArray(Constants.ACCESSORIES);
         Set<String> accessoriesSet = new HashSet<>();
-
+        String accessoryType;
         for (int i = 0; i < jsonAccessories.length(); i++) {
-            accessoriesSet.add(jsonAccessories.getJSONObject(i).getString("type"));
+            accessoryType = jsonAccessories.getJSONObject(i).getString(Constants.TYPE);
+            if (accessoryType.equals(Constants.GLASSES)) {
+                accessoriesSet.add(jsonFaceAttributes.getString(Constants.GLASSES).toUpperCase());
+            } else {
+                accessoriesSet.add(accessoryType.toUpperCase());
+            }
         }
 
         return accessoriesSet;
     }
 
     private static String getCoordinatesFromJson(JSONObject jsonFaceRectangle) throws JSONException {
-        return new StringBuilder().append(jsonFaceRectangle.getString("top")).append(COMMA)
-                .append(jsonFaceRectangle.getString("left")).append(COMMA)
-                .append(jsonFaceRectangle.getString("width")).append(COMMA)
-                .append(jsonFaceRectangle.getString("height")).append(COMMA).toString();
+        return new StringBuilder().append(jsonFaceRectangle.getString(Constants.TOP)).append(Constants.COMMA)
+                .append(jsonFaceRectangle.getString(Constants.LEFT)).append(Constants.COMMA)
+                .append(jsonFaceRectangle.getString(Constants.WIDTH)).append(Constants.COMMA)
+                .append(jsonFaceRectangle.getString(Constants.HEIGHT)).append(Constants.COMMA).toString();
     }
 
     @Override
     public String toString() {
         StringBuilder stringValue = new StringBuilder()
-                .append(this.getGender()).append(SEPARATOR)
-                .append(this.getAge()).append(SEPARATOR)
-                .append(this.getEmotion()).append(SEPARATOR)
-                .append(this.getFaceCoordinates()).append(SEPARATOR);
+                .append(this.getGender()).append(Constants.SEPARATOR)
+                .append(this.getAge()).append(Constants.SEPARATOR)
+                .append(this.getEmotion()).append(Constants.SEPARATOR)
+                .append(this.getAccessories()).append(Constants.SEPARATOR)
+                .append(this.getFaceCoordinates()).append(Constants.SEPARATOR);
 
-        accessories.forEach(stringValue::append);
         return stringValue.toString();
     }
 
