@@ -56,6 +56,7 @@
                     <show id="pa:numFaces" for-mode="view"/>
                     <show id="pa:age" for-mode="view"/>
                     <show id="pa:gender" for-mode="view"/>
+                    <show id="pa:hair" for-mode="view"/>
                     <show id="pa:emotion" for-mode="view"/>
                     <show id="pa:accessories" for-mode="view"/>
                 </field-visibility>
@@ -83,6 +84,9 @@
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
                     </field>
                     <field id="pa:gender" label-id="form.field.label.facePhoto.gender" set="emotionsSet">
+                        <control template="/org/alfresco/components/form/controls/emotions.ftl"/>
+                    </field>
+                    <field id="pa:hair" label-id="form.field.label.facePhoto.hair" set="emotionsSet">
                         <control template="/org/alfresco/components/form/controls/emotions.ftl"/>
                     </field>
                     <field id="pa:emotion" label-id="form.field.label.facePhoto.emotions" set="emotionsSet">
@@ -128,13 +132,13 @@
                 <field-visibility>
                     <show id="cm:name"/>
                     <show id="cm:title" force="true"/>
-                    <show id="cm:description" force="true"/>
                     <show id="mimetype"/>
 
                     <!-- Photo Face custom props -->
                     <show id="pa:numFaces"/>
                     <show id="pa:age"/>
                     <show id="pa:gender"/>
+                    <show id="pa:hair"/>
                     <show id="pa:emotion"/>
                     <show id="pa:accessories"/>
                 </field-visibility>
@@ -153,7 +157,8 @@
                         </control>
                     </field>
 
-                    <set id="facePhotoSet" appearance="bordered-panel" label-id="form.set.label.emotionsSet"/>
+                    <!-- Face Photo Props -->
+                    <set id="emotionsSet" appearance="bordered-panel" label-id="form.set.label.emotionsSet"/>
                     <field id="pa:numFaces" label-id="form.field.label.facePhoto.numFaces" set="emotionsSet">
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
                     </field>
@@ -161,6 +166,9 @@
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
                     </field>
                     <field id="pa:gender" label-id="form.field.label.facePhoto.gender" set="emotionsSet">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
+                    </field>
+                    <field id="pa:hair" label-id="form.field.label.facePhoto.hair" set="emotionsSet">
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
                     </field>
                     <field id="pa:emotion" label-id="form.field.label.facePhoto.emotions" set="emotionsSet">
@@ -176,36 +184,51 @@
                 <field-visibility>
                     <show id="cm:name"/>
                     <show id="cm:title" force="true"/>
-                    <show id="cm:description" force="true"/>
                     <show id="mimetype"/>
 
                     <!-- Photo Face custom props -->
                     <show id="pa:numFaces"/>
                     <show id="pa:age"/>
                     <show id="pa:gender"/>
+                    <show id="pa:hair"/>
                     <show id="pa:emotion"/>
                     <show id="pa:accessories"/>
                 </field-visibility>
                 <appearance>
-                    <field id="mimetype">
-                        <control template="/org/alfresco/components/form/controls/mimetype.ftl"/>
-                    </field>
-                    <field id="cm:modifier">
+                    <field id="cm:name">
                         <control>
-                            <control-param name="forceEditable">true</control-param>
+                            <control-param name="maxLength">255</control-param>
                         </control>
                     </field>
-                    <field id="cm:modified">
-                        <control template="/org/alfresco/components/form/controls/daterange.ftl"/>
-                    </field>
-
-                    <!-- ACME Props appearance -->
-                    <set id="acmeDocSet" appearance="bordered-panel" label-id="form.set.label.acme.document"/>
-                    <field id="acme:documentId" label-id="form.field.label.acme.documentId" set="acmeDocSet">
+                    <field id="cm:title">
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
                     </field>
-                    <field id="acme:securityClassification" label-id="form.field.label.acme.securityClassification"
-                           set="acmeDocSet"/>
+                    <field id="mimetype">
+                        <control template="/org/alfresco/components/form/controls/hidden.ftl">
+                            <control-param name="contextProperty">mimeType</control-param>
+                        </control>
+                    </field>
+
+                    <!-- Face Photo Props -->
+                    <set id="emotionsSet" appearance="bordered-panel" label-id="form.set.label.emotionsSet"/>
+                    <field id="pa:numFaces" label-id="form.field.label.facePhoto.numFaces" set="emotionsSet">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
+                    </field>
+                    <field id="pa:age" label-id="form.field.label.facePhoto.age" set="emotionsSet">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
+                    </field>
+                    <field id="pa:gender" label-id="form.field.label.facePhoto.gender" set="emotionsSet">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
+                    </field>
+                    <field id="pa:hair" label-id="form.field.label.facePhoto.hair" set="emotionsSet">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
+                    </field>
+                    <field id="pa:emotion" label-id="form.field.label.facePhoto.emotions" set="emotionsSet">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
+                    </field>
+                    <field id="pa:accessories" label-id="form.field.label.facePhoto.accessories" set="emotionsSet">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
+                    </field>
                 </appearance>
             </form>
         </forms>

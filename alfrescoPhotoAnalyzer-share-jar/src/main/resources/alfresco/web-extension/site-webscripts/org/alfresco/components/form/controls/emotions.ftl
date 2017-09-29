@@ -4,7 +4,7 @@
     <div class="viewmode-field">
         <span for="${fieldHtmlId}" class="viewmode-label">${field.label?html}:</span>
         <#list fieldValue?split(r'\s*,\s*', 'r') as item>
-            <img alt="${item}" src="${url.context}/res/images/${item}.png" style="width:6%; height:6%"/>
+            <img alt="${item}" src="${url.context}/res/images/${item}.png" style="width:12%; height:12%"/>
         </#list>
     </div>
 </#if>

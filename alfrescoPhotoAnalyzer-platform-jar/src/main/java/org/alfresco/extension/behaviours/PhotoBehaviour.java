@@ -57,11 +57,13 @@ public class PhotoBehaviour implements NodeServicePolicies.OnCreateNodePolicy {
 
                     List<String> genderList = new ArrayList();
                     List<Float> ageList = new ArrayList();
+                    List<String> hairList = new ArrayList();
                     List<String> emotionList = new ArrayList();
                     List<String> accesoriesList = new ArrayList();
                     for (int i=0; i<faceMetadata.size(); i++){
                         genderList.add(faceMetadata.get(i).getGender());
                         ageList.add(faceMetadata.get(i).getAge());
+                        hairList.addAll(faceMetadata.get(i).getHair());
                         emotionList.add(faceMetadata.get(i).getEmotion());
                         accesoriesList.addAll(faceMetadata.get(i).getAccessories());
                     }
@@ -69,10 +71,12 @@ public class PhotoBehaviour implements NodeServicePolicies.OnCreateNodePolicy {
                     genderList = genderList.stream().distinct().collect(Collectors.toList());
                     emotionList = emotionList.stream().distinct().collect(Collectors.toList());
                     accesoriesList = accesoriesList.stream().distinct().collect(Collectors.toList());
+                    hairList = hairList.stream().distinct().collect(Collectors.toList());
 
                     this.nodeService.setProperty(nodeRef, Constants.PROP_NUM_FACES, faceMetadata.size());
                     if (ageList.size() > 0) this.nodeService.setProperty(nodeRef, Constants.PROP_AGE, (Serializable) ageList);
                     if (genderList.size() > 0) this.nodeService.setProperty(nodeRef, Constants.PROP_GENDER, (Serializable) genderList);
+                    if (hairList.size() > 0) this.nodeService.setProperty(nodeRef, Constants.PROP_HAIR, (Serializable) hairList);
                     if (emotionList.size() > 0) this.nodeService.setProperty(nodeRef, Constants.PROP_EMOTION, (Serializable) emotionList);
                     if (accesoriesList.size() > 0) this.nodeService.setProperty(nodeRef, Constants.PROP_ACCESSORIES, (Serializable) accesoriesList);
                 } catch (Exception e){

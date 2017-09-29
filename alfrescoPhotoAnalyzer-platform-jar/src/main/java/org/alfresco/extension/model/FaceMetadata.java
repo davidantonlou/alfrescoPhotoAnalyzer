@@ -12,6 +12,7 @@ public class FaceMetadata {
     private String emotion;
     private int age;
     private Set<String> accessories;
+    private Set<String> hair;
     private String faceCoordinates;
 
     public FaceMetadata() {}
@@ -21,7 +22,6 @@ public class FaceMetadata {
 
         try {
             JSONArray jsonFaceArray = new JSONArray(jsonString);
-
             FaceMetadata faceMetadata;
             JSONObject jsonFaceRectangle;
             JSONObject jsonFaceAttributes;
@@ -37,6 +37,7 @@ public class FaceMetadata {
                     faceMetadata.setAccessories(getAccesoriesFromJson(jsonFaceAttributes));
                     faceMetadata.setAge(jsonFaceAttributes.getInt("age"));
                     faceMetadata.setEmotion(getEmotionFromJson(jsonFaceAttributes));
+                    faceMetadata.setHair(getHairFromJson(jsonFaceAttributes));
 
                     faceMetadataList.add(faceMetadata);
                 }
@@ -48,46 +49,106 @@ public class FaceMetadata {
         return faceMetadataList;
     }
 
+    private static Set<String> getHairFromJson(JSONObject jsonFaceAttributes) throws JSONException {
+        Set<String> hairSet = new HashSet<>();
+        if (jsonFaceAttributes.has(Constants.HAIR.toLowerCase())) {
+            JSONObject jsonHair = jsonFaceAttributes.getJSONObject(Constants.HAIR.toLowerCase());
+            if (jsonHair != null) {
+                if (hasHairProperty(Constants.BALD, jsonHair)) {
+                    hairSet.add(Constants.BALD.toUpperCase());
+                }
+
+                if (jsonHair.has(Constants.HAIR_COLOR)) {
+                    JSONArray jsonHairColors = jsonHair.getJSONArray(Constants.HAIR_COLOR);
+                    if (jsonHairColors != null && jsonHairColors.length() > 0) {
+                        Double maxValue = new Double(0);
+                        String maxHairKey = "";
+                        Double currentHairValue;
+                        String currentKey;
+                        for (int i = 0; i < jsonHairColors.length(); i++) {
+                            currentKey = jsonHairColors.getJSONObject(i).getString(Constants.COLOR);
+                            currentHairValue = jsonHairColors.getJSONObject(i).getDouble(Constants.CONFIDENCE);
+                            if (!currentKey.toUpperCase().equals(Constants.OTHER) && currentHairValue >= maxValue) {
+                                maxValue = currentHairValue;
+                                maxHairKey = currentKey;
+                            }
+                        }
+                        hairSet.add(maxHairKey.toUpperCase());
+                    }
+                }
+            }
+        }
+
+        if (jsonFaceAttributes.has(Constants.FACIAL_HAIR)) {
+            JSONObject jsonFacialHair = jsonFaceAttributes.getJSONObject(Constants.FACIAL_HAIR);
+            if (jsonFacialHair != null) {
+                if (hasHairProperty(Constants.MOUSTACHE, jsonFacialHair)) {
+                    hairSet.add(Constants.MOUSTACHE.toUpperCase());
+                }
+                if (hasHairProperty(Constants.BEARD, jsonFacialHair)) {
+                    hairSet.add(Constants.BEARD.toUpperCase());
+                }
+                if (hasHairProperty(Constants.SIDEBURNS, jsonFacialHair)) {
+                    hairSet.add(Constants.SIDEBURNS.toUpperCase());
+                }
+            }
+        }
+        return hairSet;
+    }
+
+    private static boolean hasHairProperty(String property, JSONObject json) throws JSONException {
+        return json.has(property.toLowerCase()) && json.getDouble(property.toLowerCase()) >= 0.7;
+    }
+
     private static String getEmotionFromJson(JSONObject jsonFaceAttributes) throws JSONException {
         Double maxValue = new Double(0);
         String maxEmotionKey = "";
-        JSONObject emotionsList = jsonFaceAttributes.getJSONObject(Constants.EMOTION);
-
-        Iterator keyIterator = emotionsList.keys();
-        Double currentEmotionValue;
-        String currentKey;
-        while (keyIterator.hasNext()){
-            currentKey = (String) keyIterator.next();
-            currentEmotionValue = emotionsList.getDouble(currentKey);
-            if (currentEmotionValue.longValue() >= maxValue.longValue()){
-                maxValue = currentEmotionValue;
-                maxEmotionKey = currentKey;
+        if (jsonFaceAttributes.has(Constants.EMOTION)) {
+            JSONObject emotionsList = jsonFaceAttributes.getJSONObject(Constants.EMOTION);
+            if (emotionsList != null && emotionsList.length() > 0) {
+                Iterator keyIterator = emotionsList.keys();
+                Double currentEmotionValue;
+                String currentKey;
+                while (keyIterator.hasNext()) {
+                    currentKey = (String) keyIterator.next();
+                    currentEmotionValue = emotionsList.getDouble(currentKey);
+                    if (currentEmotionValue >= maxValue) {
+                        maxValue = currentEmotionValue;
+                        maxEmotionKey = currentKey;
+                    }
+                }
             }
         }
         return maxEmotionKey.toUpperCase();
     }
 
     private static Set<String> getAccesoriesFromJson(JSONObject jsonFaceAttributes) throws JSONException {
-        JSONArray jsonAccessories = jsonFaceAttributes.getJSONArray(Constants.ACCESSORIES);
         Set<String> accessoriesSet = new HashSet<>();
-        String accessoryType;
-        for (int i = 0; i < jsonAccessories.length(); i++) {
-            accessoryType = jsonAccessories.getJSONObject(i).getString(Constants.TYPE);
-            if (accessoryType.equals(Constants.GLASSES)) {
-                accessoriesSet.add(jsonFaceAttributes.getString(Constants.GLASSES).toUpperCase());
-            } else {
-                accessoriesSet.add(accessoryType.toUpperCase());
+        if (jsonFaceAttributes.has(Constants.ACCESSORIES)) {
+            JSONArray jsonAccessories = jsonFaceAttributes.getJSONArray(Constants.ACCESSORIES);
+            if (jsonAccessories != null && jsonAccessories.length() > 0) {
+                String accessoryType;
+                for (int i = 0; i < jsonAccessories.length(); i++) {
+                    accessoryType = jsonAccessories.getJSONObject(i).getString(Constants.TYPE);
+                    if (accessoryType.equals(Constants.GLASSES)) {
+                        accessoriesSet.add(jsonFaceAttributes.getString(Constants.GLASSES).toUpperCase());
+                    } else {
+                        accessoriesSet.add(accessoryType.toUpperCase());
+                    }
+                }
             }
         }
-
         return accessoriesSet;
     }
 
     private static String getCoordinatesFromJson(JSONObject jsonFaceRectangle) throws JSONException {
-        return new StringBuilder().append(jsonFaceRectangle.getString(Constants.TOP)).append(Constants.COMMA)
-                .append(jsonFaceRectangle.getString(Constants.LEFT)).append(Constants.COMMA)
-                .append(jsonFaceRectangle.getString(Constants.WIDTH)).append(Constants.COMMA)
-                .append(jsonFaceRectangle.getString(Constants.HEIGHT)).append(Constants.COMMA).toString();
+        if (jsonFaceRectangle != null && jsonFaceRectangle.has(Constants.TOP) && jsonFaceRectangle.has(Constants.LEFT)
+                && jsonFaceRectangle.has(Constants.WIDTH) && jsonFaceRectangle.has(Constants.HEIGHT)) {
+            return new StringBuilder().append(jsonFaceRectangle.getString(Constants.TOP)).append(Constants.COMMA)
+                    .append(jsonFaceRectangle.getString(Constants.LEFT)).append(Constants.COMMA)
+                    .append(jsonFaceRectangle.getString(Constants.WIDTH)).append(Constants.COMMA)
+                    .append(jsonFaceRectangle.getString(Constants.HEIGHT)).append(Constants.COMMA).toString();
+        } else return "";
     }
 
     @Override
@@ -96,6 +157,7 @@ public class FaceMetadata {
                 .append(this.getGender()).append(Constants.SEPARATOR)
                 .append(this.getAge()).append(Constants.SEPARATOR)
                 .append(this.getEmotion()).append(Constants.SEPARATOR)
+                .append(this.getHair()).append(Constants.SEPARATOR)
                 .append(this.getAccessories()).append(Constants.SEPARATOR)
                 .append(this.getFaceCoordinates()).append(Constants.SEPARATOR);
 
@@ -140,5 +202,13 @@ public class FaceMetadata {
 
     public void setFaceCoordinates(String faceCoordinates) {
         this.faceCoordinates = faceCoordinates;
+    }
+
+    public Set<String> getHair() {
+        return hair;
+    }
+
+    public void setHair(Set<String> hair) {
+        this.hair = hair;
     }
 }

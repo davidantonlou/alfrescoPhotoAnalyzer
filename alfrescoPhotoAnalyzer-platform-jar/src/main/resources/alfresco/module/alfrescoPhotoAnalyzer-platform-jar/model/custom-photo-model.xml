@@ -59,8 +59,14 @@
         <constraint name="pa:hairConstraints" type="LIST">
             <parameter name="allowedValues">
                 <list>
+                    <value>BLACK</value>
+                    <value>BLOND</value>
+                    <value>BROWN</value>
+                    <value>RED</value>
+                    <value>GRAY</value>
                     <value>BEARD</value>
                     <value>MOUSTACHE</value>
+                    <value>SIDEBURNS</value>
                     <value>BALD</value>
                 </list>
             </parameter>
@@ -93,6 +99,14 @@
                     <title>Face Coordinates</title>
                     <type>d:text</type>
                     <multiple>true</multiple>
+                </property>
+                <property name="pa:hair">
+                    <title>Hair</title>
+                    <type>d:text</type>
+                    <multiple>true</multiple>
+                    <constraints>
+                        <constraint ref="pa:hairConstraints" />
+                    </constraints>
                 </property>
                 <property name="pa:emotion">
                     <title>Face Emotions</title>
