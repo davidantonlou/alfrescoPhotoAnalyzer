@@ -1,34 +1,32 @@
-# Alfresco AIO Project - SDK 3
+# Alfresco Photo Analyzer Module - Global Hack-a-thon 2017
 
-This is an All-In-One (AIO) project for Alfresco SDK 3.0. 
+Alfresco customization to extracts information of upload photos. 
 
-Run with `mvn clean install -DskipTests=true alfresco:run` or `./run.sh` and verify that it 
-
- * Runs the embedded Tomcat + H2 DB 
- * Runs Alfresco Platform (Repository)
- * Runs Alfresco Solr4
- * Runs Alfresco Share
- * Packages both as JAR and AMP assembly for modules
+The list of possible information to extract from a photo is:
+  + Number of persons
+  + Ages
+  + Gender (![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/MALE.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/FEMALE.png))
+  + Hair (![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/BLACK.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/BROWN.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/GRAY.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/RED.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/BLOND.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/BALD.png))
+  + Facial Hair (![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/BEARD.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/MOUSTACHE.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/SIDEBURNS.png))
+  + Emotions (![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/ANGER.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/CONTEMPT.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/DISGUST.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/FEAR.png ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/HAPPINESS.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/SADNESS.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/NEUTRAL.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/SURPRISE.png)
+  + Accessories (![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/READGLASSES.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/SUNGLASSES.png) ![alt text](https://github.com/davidantonlou/alfrescoPhotoAnalyzer/tree/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/HEADWEAR.png)))
  
-# Few things to notice
 
- * No parent pom
- * No WAR projects, all handled by the Alfresco Maven Plugin 
- * No runner project - it's all in the Alfresco Maven Plugin
- * Standard JAR packaging and layout
- * Works seamlessly with Eclipse and IntelliJ IDEA
- * JRebel for hot reloading, JRebel maven plugin for generating rebel.xml, agent usage: `MAVEN_OPTS=-Xms256m -Xmx1G -agentpath:/home/martin/apps/jrebel/lib/libjrebel64.so`
- * AMP as an assembly
- * [Configurable Run mojo](https://github.com/Alfresco/alfresco-sdk/blob/sdk-3.0/plugins/alfresco-maven-plugin/src/main/java/org/alfresco/maven/plugin/RunMojo.java) in the `alfresco-maven-plugin`
- * No unit testing/functional tests just yet
- * Resources loaded from META-INF
- * Web Fragment (this includes a sample servlet configured via web fragment)
- 
-# TODO
- 
-  * Abstract assembly into a dependency so we don't have to ship the assembly in the archetype
-  * Purge
-  * Functional/remote unit tests
-   
+
+# Build and Run Alfresco
+
+   This project uses:
+      * Alfresco 5.2 with SDK 3.0.0
+      * Microsoft Azure API
   
+   Run embedded Tomcat + H2 DB with `mvn clean install -DskipTests=true alfresco:run` or `./run.sh` 
+
+ 
+# Configure Microsoft Azure API
+
+   To configure Azure API connection, change the following properties in the alfresco-global.properties file.
+
+  `photo_analyzer.azure.api.url=https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect`
+  `photo_analyzer.azure.api.attribute_list=age,gender,emotion,hair,facialHair,accessories,glasses`
+  `photo_analyzer.azure.api.subscription_key=4ef1782a6a0f473a86b3f139dc7457f3`
  

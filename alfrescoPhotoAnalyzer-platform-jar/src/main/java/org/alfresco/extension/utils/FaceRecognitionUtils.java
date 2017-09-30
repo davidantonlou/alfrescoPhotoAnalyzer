@@ -24,16 +24,15 @@ public class FaceRecognitionUtils {
     private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     public HttpPost prepareRequest(File file) throws URISyntaxException {
-        URIBuilder builder = new URIBuilder(Constants.AZURE_FACE_API_URL);
+        URIBuilder builder = new URIBuilder(Constants.getPropertyValue(Constants.AZURE_FACE_API_URL));
         builder.setParameter("returnFaceId", "true");
         builder.setParameter("returnFaceRectangle", "true");
-
-        builder.setParameter("returnFaceAttributes", Constants.FACE_ATTRIBUTES_LIST_TO_EXTRACT);
+        builder.setParameter("returnFaceAttributes", Constants.getPropertyValue(Constants.FACE_ATTRIBUTES_LIST_TO_EXTRACT));
 
         URI uri = builder.build();
         HttpPost request = new HttpPost(uri);
         request.setHeader("Content-Type", Constants.APPLICATION_OCTET_STREAM);
-        request.setHeader("Ocp-Apim-Subscription-Key", Constants.API_SUBSCRIPTION_KEY);
+        request.setHeader("Ocp-Apim-Subscription-Key", Constants.getPropertyValue(Constants.API_SUBSCRIPTION_KEY));
 
         FileEntity reqEntity = new FileEntity(file, ContentType.APPLICATION_OCTET_STREAM);
         request.setEntity(reqEntity);

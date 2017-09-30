@@ -20,7 +20,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-
+    <bean id="alfresco.PhotoAnalyzer.Constants" class="org.alfresco.extension.utils.Constants" init-method="init" destroy-method="destroy">
+        <property name="properties">
+            <ref bean="global-properties"/>
+        </property>
+    </bean>
 
 
 </beans>

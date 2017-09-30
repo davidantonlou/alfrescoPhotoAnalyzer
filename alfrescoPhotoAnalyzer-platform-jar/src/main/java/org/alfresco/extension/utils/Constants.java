@@ -2,7 +2,19 @@ package org.alfresco.extension.utils;
 
 import org.alfresco.service.namespace.QName;
 
+import java.util.Properties;
+
 public class Constants {
+
+    protected Properties properties;
+
+    private static Constants instance;
+
+    private void init() {
+        Constants.instance = this;
+    }
+
+    private void destroy() { Constants.instance = null; }
 
     public static final String NAMESPACE_PHOTO_ANALYZER = "http://www.mimacom.com/alfresco/alfrescoPhotoAnalyzer/1.0";
 
@@ -55,9 +67,21 @@ public class Constants {
     public static final String COMMA = ",";
     public static final String IMAGE_STRING = "image";
 
-    public static final String AZURE_FACE_API_URL = "https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect";
-    public static final String FACE_ATTRIBUTES_LIST_TO_EXTRACT = "age,gender,emotion,hair,facialHair,accessories,glasses";
-    public static final String API_SUBSCRIPTION_KEY = "4ef1782a6a0f473a86b3f139dc7457f3";
+    public static final String AZURE_FACE_API_URL = "photo_analyzer.azure.api.url";
+    public static final String FACE_ATTRIBUTES_LIST_TO_EXTRACT = "photo_analyzer.azure.api.attribute_list";
+    public static final String API_SUBSCRIPTION_KEY = "photo_analyzer.azure.api.subscription_key";
     public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+
+    public static String getPropertyValue(String propertyName) {
+        String propertyValue = instance.properties.getProperty(propertyName);
+        if (propertyValue == null) {
+            throw new RuntimeException("The property " + propertyName + " is not configured at alfresco-global.properties");
+        }
+        return propertyValue;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
 
 }
