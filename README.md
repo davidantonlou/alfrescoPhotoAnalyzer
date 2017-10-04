@@ -3,7 +3,7 @@
 Alfresco customization to extracts information of upload photos. 
 
 The result you will see is a box with the properties extracted from the metadata photo.
-<img src="https://github.com/davidantonlou/alfrescoPhotoAnalyzer/blob/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/photoAnalyzerResult.png?raw=true">
+<img src="https://github.com/davidantonlou/alfrescoPhotoAnalyzer/blob/master/alfrescoPhotoAnalyzer-share-jar/src/main/resources/META-INF/images/photoAnalyzerResult.png?raw=true" width="50%" height="50%">
 
 The list of possible information to extract from a photo is:
   + Number of persons
