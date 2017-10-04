@@ -218,16 +218,16 @@
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
                     </field>
                     <field id="pa:gender" label-id="form.field.label.facePhoto.gender" set="emotionsSet">
-                        <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
+                        <control template="/org/alfresco/components/form/controls/imagesCheckbox.ftl"/>
                     </field>
                     <field id="pa:hair" label-id="form.field.label.facePhoto.hair" set="emotionsSet">
-                        <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
-                    </field>
+                        <control template="/org/alfresco/components/form/controls/imagesCheckbox.ftl"/>
+                    </field>-
                     <field id="pa:emotion" label-id="form.field.label.facePhoto.emotions" set="emotionsSet">
-                        <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
+                        <control template="/org/alfresco/components/form/controls/imagesCheckbox.ftl"/>
                     </field>
                     <field id="pa:accessories" label-id="form.field.label.facePhoto.accessories" set="emotionsSet">
-                        <control template="/org/alfresco/components/form/controls/textfield.ftl"/>
+                        <control template="/org/alfresco/components/form/controls/imagesCheckbox.ftl"/>
                     </field>
                 </appearance>
             </form>
