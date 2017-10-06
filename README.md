@@ -30,5 +30,5 @@ The list of possible information to extract from a photo is:
 
   `photo_analyzer.azure.api.url=https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect`
   `photo_analyzer.azure.api.attribute_list=age,gender,emotion,hair,facialHair,accessories,glasses`
-  `photo_analyzer.azure.api.subscription_key=4ef1782a6a0f473a86b3f139dc7457f3`
+  `photo_analyzer.azure.api.subscription_key=<subsription-key>`
  
